@@ -387,7 +387,7 @@ view { topRated, halfPrice } =
                                             , reviews = []
                                             }
                             in
-                            row [ width fill, padding 5, spacing 5, Border.solid, Border.color black ]
+                            row [ width fill, padding 5, spacing 5, Border.width 1, Border.solid, Border.color black ]
                                 [ column [ width (px 250), alignTop ]
                                     [ image [ centerX ] { src = show.image, description = show.name } ]
                                 , column [ width fill, spacing 20, alignTop ]
