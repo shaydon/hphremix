@@ -363,6 +363,9 @@ view { topRated, halfPrice } =
 
         green =
             rgb 0 200 0
+
+        black =
+            rgb 0 0 0
     in
     layout [] <|
         column [ width fill, padding 10, spacing 40, Font.size (scaled 1) ]
@@ -384,7 +387,7 @@ view { topRated, halfPrice } =
                                             , reviews = []
                                             }
                             in
-                            row [ width fill, padding 5, spacing 5, Border.solid ]
+                            row [ width fill, padding 5, spacing 5, Border.solid, Border.color black ]
                                 [ column [ width (px 250), alignTop ]
                                     [ image [ centerX ] { src = show.image, description = show.name } ]
                                 , column [ width fill, spacing 20, alignTop ]
