@@ -11,7 +11,7 @@ import Html.Parser.Util as HtmlParser
 import Http
 import ListArrow exposing (..)
 import Parser exposing ((|.), (|=), Parser)
-import Set
+import String.Extra as String
 
 
 listTopRatedUrl =
@@ -20,6 +20,11 @@ listTopRatedUrl =
 
 halfPriceHutUrl =
     "https://cors-anywhere.herokuapp.com/https://tickets.edfringe.com/box-office/virgin-money-half-price-hut"
+
+
+sanitize : String -> String
+sanitize =
+    String.clean << String.removeAccents
 
 
 type Requested a
@@ -123,7 +128,12 @@ getTopRatedDict xs =
                 |> and getChildren
                 |> convert paired
                 |> and (getTopRatedShowRating |> split getTopRatedShowDetails)
-                |> and (arr (\( x, ( y, z ) ) -> ( y, { rank = x, reviews = z } )))
+                |> and
+                    (arr
+                        (\( rank, ( name, reviews ) ) ->
+                            ( sanitize name, { rank = rank, reviews = reviews } )
+                        )
+                    )
             )
         |> Dict.fromList
 
@@ -381,7 +391,7 @@ view { topRated, halfPrice } =
                         (\show ->
                             let
                                 rating =
-                                    Dict.get show.name topRated_
+                                    Dict.get (sanitize show.name) topRated_
                                         |> Maybe.withDefault
                                             { rank = "Unrated"
                                             , reviews = []
