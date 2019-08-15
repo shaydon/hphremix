@@ -3,8 +3,8 @@ module Main exposing (main)
 import Browser
 import Dict exposing (Dict)
 import Element exposing (..)
+import Element.Border as Border
 import Element.Font as Font
-import Element.Region as Region
 import Html exposing (Html, div)
 import Html.Parser as HtmlParser exposing (Attribute, Node(..))
 import Html.Parser.Util as HtmlParser
@@ -365,7 +365,7 @@ view { topRated, halfPrice } =
             rgb 0 200 0
     in
     layout [] <|
-        column [ width fill, padding 10, spacing 20, Font.size (scaled 1) ]
+        column [ width fill, padding 10, spacing 40, Font.size (scaled 1) ]
             (case ( topRated, halfPrice ) of
                 ( Loading, _ ) ->
                     [ text "Loading..." ]
@@ -384,7 +384,7 @@ view { topRated, halfPrice } =
                                             , reviews = []
                                             }
                             in
-                            row [ width fill, spacing 5 ]
+                            row [ width fill, padding 5, spacing 5, Border.solid ]
                                 [ column [ width (px 250), alignTop ]
                                     [ image [ centerX ] { src = show.image, description = show.name } ]
                                 , column [ width fill, spacing 20, alignTop ]
