@@ -360,7 +360,9 @@ view { topRated, halfPrice } =
     let
         scaled =
             round << modular 32 1.25
-        green = rgb 0 200 0
+
+        green =
+            rgb 0 200 0
     in
     layout [] <|
         column [ width fill, padding 10, spacing 20, Font.size (scaled 1) ]
@@ -389,7 +391,7 @@ view { topRated, halfPrice } =
                                     [ row [ width fill ]
                                         [ textColumn [ width fill, spacing 5 ]
                                             [ paragraph []
-                                                [ link [ Font.size (scaled 3) ]
+                                                [ newTabLink [ Font.size (scaled 3) ]
                                                     { url = "https://tickets.edfringe.com" ++ show.link
                                                     , label = text show.name
                                                     }
@@ -398,8 +400,12 @@ view { topRated, halfPrice } =
                                                 [ el [ Font.size (scaled 2) ] (text show.categories)
                                                 , el [ Font.size (scaled 1) ] (text (" " ++ show.genres))
                                                 ]
-                                            , paragraph []
-                                                [ link [ Font.size (scaled 1) ]
+                                            ]
+                                        ]
+                                    , row [ width fill ]
+                                        [ textColumn [ width fill, spacing 5 ]
+                                            [ paragraph []
+                                                [ newTabLink [ Font.size (scaled 2) ]
                                                     { url = "https://tickets.edfringe.com" ++ show.venue.link
                                                     , label = text show.venue.name
                                                     }
@@ -416,7 +422,7 @@ view { topRated, halfPrice } =
                                                 (List.map
                                                     (\review ->
                                                         paragraph []
-                                                            [ link [ Font.size (scaled 1) ]
+                                                            [ newTabLink [ Font.size (scaled 2) ]
                                                                 { url =
                                                                     if String.startsWith "/" review.link then
                                                                         "https://edinburghfestival.list.co.uk" ++ review.link
