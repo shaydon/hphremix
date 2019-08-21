@@ -5,7 +5,7 @@ import Dict exposing (Dict)
 import Element exposing (..)
 import Element.Border as Border
 import Element.Font as Font
-import Html exposing (Html, div)
+import Html exposing (Html)
 import Html.Parser as HtmlParser exposing (Attribute, Node(..))
 import Html.Parser.Util as HtmlParser
 import Http
@@ -14,10 +14,12 @@ import Parser exposing ((|.), (|=), Parser)
 import String.Extra as String
 
 
+listTopRatedUrl : String
 listTopRatedUrl =
     "https://cors-anywhere.herokuapp.com/https://edinburghfestival.list.co.uk/top-rated/"
 
 
+halfPriceHutUrl : String
 halfPriceHutUrl =
     "https://cors-anywhere.herokuapp.com/https://tickets.edfringe.com/box-office/virgin-money-half-price-hut"
 
@@ -125,9 +127,7 @@ getTopRatedDict xs =
     xs
         |> ListArrow.map
             (deep isTopRatedList
-                |> and getChildren
-                |> convert paired
-                |> and (getTopRatedShowRating |> split getTopRatedShowDetails)
+                |> and (getTopRatedShowRating |> fanout getTopRatedShowDetails)
                 |> and
                     (arr
                         (\( rank, ( name, reviews ) ) ->
@@ -137,22 +137,6 @@ getTopRatedDict xs =
             )
         |> Dict.fromList
 
-
-paired : List a -> List ( a, a )
-paired xs =
-    pairedHelper [] xs |> List.reverse
-
-
-pairedHelper : List ( a, a ) -> List a -> List ( a, a )
-pairedHelper acc xs =
-    case xs of
-        x1 :: x2 :: xs_ ->
-            pairedHelper (( x1, x2 ) :: acc) xs_
-
-        _ ->
-            acc
-
-
 isTopRatedList : HtmlArrow Node
 isTopRatedList =
     hasAttr ( "class", "everyReview currentYear" )
@@ -160,13 +144,14 @@ isTopRatedList =
 
 getTopRatedShowRating : HtmlArrow String
 getTopRatedShowRating =
-    getChildren |> and getText
+    getChildren |> and (hasName "h2") |> slash getText
 
 
 getTopRatedShowDetails : HtmlArrow ( String, List Review )
 getTopRatedShowDetails =
     getChildren
-        |> and
+        |> and (hasName "ul")
+        |> slash
             (getTopRatedShowName
                 |> fanout
                     (listA getTopRatedShowReview)
